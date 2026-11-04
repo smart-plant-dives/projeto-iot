@@ -1,4 +1,3 @@
-
 /* =========================================================
    VERDE VIVO / SMARTPLANT
    SCRIPT PRINCIPAL
@@ -11,9 +10,9 @@
 ========================================================= */
 
 const API_URL = "http://localhost:8080/api";
+const SESSION_KEY = "smartPlant.session";
 
-const ACCOUNTS_KEY = "verdeVivo.accounts";
-const SESSION_KEY = "verdeVivo.session";
+let currentSession = null;
 
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 
@@ -72,31 +71,17 @@ const metrics = {
 
 
 /* =========================================================
-   3. ARMAZENAMENTO LOCAL
+   3. SESSÃO DO USUÁRIO
 ========================================================= */
 
-function readStorage(key, fallback) {
+function readSession() {
   try {
-    const value = localStorage.getItem(key);
-
-    return value ? JSON.parse(value) : fallback;
-
-  } catch (error) {
-    console.error("Erro ao ler armazenamento:", error);
-
-    return fallback;
+    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+  } catch (sessionError) {
+    console.error("Erro ao recuperar a sessão:", sessionError);
+    sessionStorage.removeItem(SESSION_KEY);
+    return null;
   }
-}
-
-function readAccounts() {
-  return readStorage(ACCOUNTS_KEY, []);
-}
-
-function saveAccounts(accounts) {
-  localStorage.setItem(
-    ACCOUNTS_KEY,
-    JSON.stringify(accounts)
-  );
 }
 
 
@@ -118,9 +103,13 @@ async function apiRequest(endpoint, options = {}) {
   if (!response.ok) {
     const message = await response.text();
 
-    throw new Error(
+    const requestError = new Error(
       message || `Erro HTTP ${response.status}`
     );
+
+    requestError.status = response.status;
+
+    throw requestError;
   }
 
   if (response.status === 204) {
@@ -141,23 +130,14 @@ function normalizePlant(data) {
 
   return {
     id: String(data.id),
-
     name: data.nomePlanta || "",
-
     latin: data.especie || "",
-
     photo: data.url || data.image || "",
-
     place: "Ambiente não informado",
-
     device: "",
-
     soil: null,
-
     temp: null,
-
     air: null,
-
     water: null
   };
 }
@@ -169,9 +149,24 @@ function normalizePlant(data) {
 
 async function loadPlantsFromApi() {
 
+  const session = currentSession || readSession();
+
+  if (!session?.id) {
+    plants = [];
+    renderPlants();
+
+    $("#galleryStatus").textContent =
+      "Entre na sua conta para visualizar suas plantas.";
+
+    return false;
+  }
+
   try {
 
-    const data = await apiRequest("/plantas");
+    // Busca somente as plantas vinculadas ao usuário conectado.
+    const data = await apiRequest(
+      `/plantas/usuario/${encodeURIComponent(session.id)}`
+    );
 
     plants = Array.isArray(data)
       ? data.map(normalizePlant)
@@ -180,7 +175,7 @@ async function loadPlantsFromApi() {
     renderPlants();
 
     $("#galleryStatus").textContent =
-      `${plants.length} planta(s) cadastrada(s) no banco de dados.`;
+      `${plants.length} planta(s) cadastrada(s) na sua conta.`;
 
     return true;
 
@@ -188,10 +183,13 @@ async function loadPlantsFromApi() {
 
     console.error("Erro ao carregar plantas:", error);
 
-    $("#galleryStatus").textContent =
-      "Não foi possível conectar ao servidor.";
+    plants = [];
+    renderPlants();
 
-    toast("Erro ao carregar as plantas.");
+    $("#galleryStatus").textContent =
+      "Não foi possível carregar suas plantas.";
+
+    toast("Erro ao carregar as plantas. Verifique o servidor.");
 
     return false;
   }
@@ -204,6 +202,12 @@ async function loadPlantsFromApi() {
 
 async function createPlantApi(plant) {
 
+  const session = currentSession || readSession();
+
+  if (!session?.id) {
+    throw new Error("Sua sessão expirou. Entre novamente.");
+  }
+
   const data = await apiRequest("/plantas", {
 
     method: "POST",
@@ -211,10 +215,12 @@ async function createPlantApi(plant) {
     body: JSON.stringify({
 
       nomePlanta: plant.name,
-
       especie: plant.latin,
+      url: plant.photo || "",
 
-      url: plant.photo || ""
+      usuario: {
+        id: session.id
+      }
 
     })
 
@@ -230,6 +236,12 @@ async function createPlantApi(plant) {
 
 async function updatePlantApi(plant) {
 
+  const session = currentSession || readSession();
+
+  if (!session?.id) {
+    throw new Error("Sua sessão expirou. Entre novamente.");
+  }
+
   const data = await apiRequest(
     `/plantas/${plant.id}`,
     {
@@ -239,10 +251,12 @@ async function updatePlantApi(plant) {
       body: JSON.stringify({
 
         nomePlanta: plant.name,
-
         especie: plant.latin,
+        url: plant.photo || "",
 
-        url: plant.photo || ""
+        usuario: {
+          id: session.id
+        }
 
       })
 
@@ -260,10 +274,9 @@ async function updatePlantApi(plant) {
 async function deletePlantApi(id) {
 
   return apiRequest(`/plantas/${id}`, {
-
     method: "DELETE"
-
   });
+
 }
 
 
@@ -284,9 +297,7 @@ async function loadReportsFromApi(plantId) {
       : [];
 
     activePlantReports.sort((a, b) => {
-
       return new Date(a.dataHora) - new Date(b.dataHora);
-
     });
 
     return activePlantReports;
@@ -336,9 +347,7 @@ function updateSensorsFromReports(reports) {
 ========================================================= */
 
 function validEmail(email) {
-
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
 }
 
 function error(selector, message = "") {
@@ -368,9 +377,7 @@ function showView(id) {
 
   document.querySelectorAll(".screen, #appView")
     .forEach(element => {
-
       element.classList.add("hidden");
-
     });
 
   const target = $("#" + id);
@@ -398,9 +405,7 @@ function toast(message) {
   clearTimeout(toastTimer);
 
   toastTimer = setTimeout(() => {
-
     element.classList.remove("show");
-
   }, 2800);
 }
 
@@ -414,15 +419,11 @@ function validateImage(file) {
   if (!file) return null;
 
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-
     return "Formato inválido. Envie JPG, PNG ou WEBP.";
-
   }
 
   if (file.size > MAX_IMAGE_SIZE) {
-
     return "A imagem deve ter no máximo 5 MB.";
-
   }
 
   return null;
@@ -438,27 +439,21 @@ function compressImage(file, maxSize = 1000, quality = 0.78) {
   return new Promise((resolve, reject) => {
 
     if (!file) {
-
       reject(new Error("Selecione uma imagem."));
-
       return;
     }
 
     const validationError = validateImage(file);
 
     if (validationError) {
-
       reject(new Error(validationError));
-
       return;
     }
 
     const reader = new FileReader();
 
     reader.onerror = () => {
-
       reject(new Error("Não foi possível ler a imagem."));
-
     };
 
     reader.onload = () => {
@@ -466,9 +461,7 @@ function compressImage(file, maxSize = 1000, quality = 0.78) {
       const image = new Image();
 
       image.onerror = () => {
-
         reject(new Error("A imagem selecionada não é válida."));
-
       };
 
       image.onload = () => {
@@ -493,9 +486,7 @@ function compressImage(file, maxSize = 1000, quality = 0.78) {
         const context = canvas.getContext("2d");
 
         if (!context) {
-
           reject(new Error("Não foi possível processar a imagem."));
-
           return;
         }
 
@@ -532,17 +523,13 @@ if (newPhotoInput) {
   newPhotoInput.addEventListener("change", async () => {
 
     const preview = $("#newPlantPhotoPreview");
-
     const previewImage = preview?.querySelector("img");
-
     const file = newPhotoInput.files?.[0];
 
     error("#addPlantError");
 
     if (!file) {
-
       preview?.classList.add("hidden");
-
       return;
     }
 
@@ -551,7 +538,6 @@ if (newPhotoInput) {
     if (validationError) {
 
       newPhotoInput.value = "";
-
       preview?.classList.add("hidden");
 
       error("#addPlantError", validationError);
@@ -572,7 +558,6 @@ if (newPhotoInput) {
     } catch (imageError) {
 
       newPhotoInput.value = "";
-
       preview?.classList.add("hidden");
 
       error("#addPlantError", imageError.message);
@@ -593,7 +578,6 @@ document.querySelectorAll("[data-toggle-password]")
     button.addEventListener("click", () => {
 
       const inputId = button.dataset.togglePassword;
-
       const input = $("#" + inputId);
 
       if (!input) return;
@@ -643,160 +627,182 @@ document.querySelectorAll("[data-view]")
    18. ENTRAR NO SISTEMA
 ========================================================= */
 
-function enterApp(account) {
+async function enterApp(account) {
+
+  const session = {
+    id: Number(account.id),
+    name: account.nome || account.name,
+    email: account.email
+  };
+
+  if (!session.id || !session.name || !session.email) {
+    throw new Error(
+      "O servidor não retornou os dados completos do usuário."
+    );
+  }
+
+  currentSession = session;
 
   sessionStorage.setItem(
     SESSION_KEY,
-    JSON.stringify({
-
-      name: account.name,
-
-      email: account.email
-
-    })
+    JSON.stringify(session)
   );
 
   const userName = $("#userName");
 
   if (userName) {
-    userName.textContent = account.name;
+    userName.textContent = session.name;
   }
 
   showView("appView");
 
-  showGallery();
+  await showGallery();
 
-  toast(`Bem-vindo ao SmartPlant, ${account.name}!`);
+  toast(`Bem-vindo ao SmartPlant, ${session.name}!`);
 }
 
 
 /* =========================================================
-   19. CADASTRO DE USUÁRIO DEMONSTRATIVO
+   19. CADASTRO DE USUÁRIO NO SPRING BOOT
 ========================================================= */
 
-$("#registerForm").addEventListener("submit", event => {
+$("#registerForm").addEventListener("submit", async event => {
 
   event.preventDefault();
 
   error("#registerError");
 
   const name = $("#registerName").value.trim();
-
   const email = $("#registerEmail").value.trim().toLowerCase();
-
   const password = $("#registerPassword").value;
-
   const confirm = $("#registerConfirm").value;
 
   if (name.length < 2) {
-
-    return error(
-      "#registerError",
-      "Informe seu nome completo."
-    );
+    return error("#registerError", "Informe seu nome completo.");
   }
 
   if (!validEmail(email)) {
-
-    return error(
-      "#registerError",
-      "Digite um e-mail válido."
-    );
+    return error("#registerError", "Digite um e-mail válido.");
   }
 
-  if (password.length < 4) {
-
+  if (password.length !== 8) {
     return error(
       "#registerError",
-      "A senha precisa ter pelo menos 4 caracteres."
+      "A senha deve conter exatamente 8 caracteres."
     );
   }
 
   if (password !== confirm) {
-
-    return error(
-      "#registerError",
-      "As senhas não coincidem."
-    );
+    return error("#registerError", "As senhas não coincidem.");
   }
 
-  const accounts = readAccounts();
+  const submitButton = event.submitter;
 
-  if (accounts.some(account => account.email === email)) {
-
-    return error(
-      "#registerError",
-      "Este e-mail já está cadastrado. Faça login."
-    );
+  if (submitButton) {
+    submitButton.disabled = true;
   }
 
-  accounts.push({
+  try {
 
-    name,
-    email,
-    password
+    const usuario = await apiRequest("/usuarios", {
 
-  });
+      method: "POST",
 
-  saveAccounts(accounts);
+      body: JSON.stringify({
+        nome: name,
+        email,
+        senha: password
+      })
 
-  enterApp({ name, email });
+    });
+
+    await enterApp(usuario);
+
+    $("#registerForm").reset();
+
+  } catch (registerError) {
+
+    console.error("Erro ao cadastrar usuário:", registerError);
+
+    error(
+      "#registerError",
+      registerError.status === 409
+        ? "Este e-mail já está cadastrado. Faça login."
+        : registerError.message ||
+          "Não foi possível criar sua conta. Verifique o servidor."
+    );
+
+  } finally {
+
+    if (submitButton) {
+      submitButton.disabled = false;
+    }
+
+  }
 
 });
 
 
 /* =========================================================
-   20. LOGIN DEMONSTRATIVO
+   20. LOGIN PELO SPRING BOOT
 ========================================================= */
 
-$("#loginForm").addEventListener("submit", event => {
+$("#loginForm").addEventListener("submit", async event => {
 
   event.preventDefault();
 
   error("#loginError");
 
   const email = $("#loginEmail").value.trim().toLowerCase();
-
   const password = $("#loginPassword").value;
 
   if (!validEmail(email)) {
-
-    return error(
-      "#loginError",
-      "Digite um e-mail válido."
-    );
+    return error("#loginError", "Digite um e-mail válido.");
   }
 
   if (!password) {
-
-    return error(
-      "#loginError",
-      "Digite sua senha."
-    );
+    return error("#loginError", "Digite sua senha.");
   }
 
-  const accounts = readAccounts();
+  const submitButton = event.submitter;
 
-  const account = accounts.find(item =>
-    item.email === email && item.password === password
-  );
-
-  const existingEmail = accounts.some(
-    item => item.email === email
-  );
-
-  if (existingEmail && !account) {
-
-    return error(
-      "#loginError",
-      "Senha incorreta. Confira os dados."
-    );
+  if (submitButton) {
+    submitButton.disabled = true;
   }
 
-  const name = account?.name ||
-    email.split("@")[0].replace(/[._-]+/g, " ");
+  try {
 
-  enterApp({ name, email });
+    const usuario = await apiRequest("/usuarios/login", {
+
+      method: "POST",
+
+      body: JSON.stringify({
+        email,
+        senha: password
+      })
+
+    });
+
+    await enterApp(usuario);
+
+    $("#loginForm").reset();
+
+  } catch (loginError) {
+
+    console.error("Erro ao realizar login:", loginError);
+
+    error(
+      "#loginError",
+      loginError.message || "E-mail ou senha incorretos."
+    );
+
+  } finally {
+
+    if (submitButton) {
+      submitButton.disabled = false;
+    }
+
+  }
 
 });
 
@@ -833,11 +839,9 @@ $("#forgotForm").addEventListener("submit", event => {
 async function showGallery() {
 
   $("#galleryView").classList.remove("hidden");
-
   $("#detailView").classList.add("hidden");
 
   activePlant = null;
-
   activePlantReports = [];
 
   closeAddPlantForm();
@@ -856,7 +860,6 @@ async function showGallery() {
 function renderPlants() {
 
   const search = $("#plantSearch");
-
   const grid = $("#plantsGrid");
 
   if (!search || !grid) return;
@@ -868,12 +871,10 @@ function renderPlants() {
   const filtered = plants.filter(plant => {
 
     const text = [
-
       plant.name,
       plant.latin,
       plant.place,
       plant.device
-
     ].join(" ").toLocaleLowerCase("pt-BR");
 
     return text.includes(query);
@@ -1006,13 +1007,11 @@ $("#refreshGallery").addEventListener("click", async () => {
 function openAddPlantForm() {
 
   const container = $("#addPlantFormContainer");
-
   const button = $("#openAddPlantForm");
 
   if (!container || !button) return;
 
   container.classList.remove("hidden");
-
   button.classList.add("hidden");
 
   button.setAttribute("aria-expanded", "true");
@@ -1020,11 +1019,8 @@ function openAddPlantForm() {
   error("#addPlantError");
 
   container.scrollIntoView({
-
     behavior: "smooth",
-
     block: "center"
-
   });
 
   $("#newPlantName").focus();
@@ -1034,13 +1030,11 @@ function openAddPlantForm() {
 function closeAddPlantForm() {
 
   const container = $("#addPlantFormContainer");
-
   const button = $("#openAddPlantForm");
 
   if (!container || !button) return;
 
   container.classList.add("hidden");
-
   button.classList.remove("hidden");
 
   button.setAttribute("aria-expanded", "false");
@@ -1076,7 +1070,6 @@ $("#addPlantForm").addEventListener("submit", async event => {
   error("#addPlantError");
 
   const name = $("#newPlantName").value.trim();
-
   const latin = $("#newPlantLatin").value.trim();
 
   const photoFile = $("#newPlantPhoto").files?.[0] || null;
@@ -1094,9 +1087,7 @@ $("#addPlantForm").addEventListener("submit", async event => {
     const validationError = validateImage(photoFile);
 
     if (validationError) {
-
       return error("#addPlantError", validationError);
-
     }
   }
 
@@ -1105,26 +1096,18 @@ $("#addPlantForm").addEventListener("submit", async event => {
   if (photoFile) {
 
     try {
-
       photo = await compressImage(photoFile);
-
     } catch (imageError) {
-
       return error("#addPlantError", imageError.message);
-
     }
   }
 
   try {
 
     const newPlant = await createPlantApi({
-
       name,
-
       latin,
-
       photo
-
     });
 
     plants.push(newPlant);
@@ -1162,11 +1145,8 @@ $("#addPlantForm").addEventListener("submit", async event => {
 $("#plantsGrid").addEventListener("click", async event => {
 
   const editButton = event.target.closest("[data-edit]");
-
   const deleteButton = event.target.closest("[data-delete]");
-
   const detailsButton = event.target.closest("[data-open]");
-
   const card = event.target.closest("[data-plant]");
 
   if (editButton) {
@@ -1225,9 +1205,7 @@ $("#plantsGrid").addEventListener("click", async event => {
   }
 
   if (card && !event.target.closest("button")) {
-
     await showPlant(card.dataset.plant);
-
   }
 
 });
@@ -1275,7 +1253,6 @@ async function openPlantEditor(id) {
   const modal = document.createElement("div");
 
   modal.id = "plantEditModal";
-
   modal.className = "plant-modal";
 
   modal.innerHTML = `
@@ -1554,9 +1531,7 @@ async function openPlantEditor(id) {
         const validationError = validateImage(newFile);
 
         if (validationError) {
-
           return error("#editPlantError", validationError);
-
         }
 
       }
@@ -1566,25 +1541,18 @@ async function openPlantEditor(id) {
         let photo = plant.photo || "";
 
         if (newFile) {
-
           photo = await compressImage(newFile);
-
         }
 
         if (modal.querySelector("#removePlantPhoto").checked) {
-
           photo = "";
-
         }
 
         const updatedPlant = await updatePlantApi({
 
           id: plant.id,
-
           name,
-
           latin,
-
           photo
 
         });
@@ -1596,9 +1564,7 @@ async function openPlantEditor(id) {
         renderPlants();
 
         if (activePlant?.id === id) {
-
           await showPlant(id);
-
         }
 
         toast(`${plant.name} foi atualizada!`);
@@ -1619,9 +1585,7 @@ async function openPlantEditor(id) {
 
   modal.querySelectorAll("[data-close-modal]")
     .forEach(button => {
-
       button.addEventListener("click", closePlantModal);
-
     });
 
   modal.querySelector("#editPlantName").focus();
@@ -1636,7 +1600,6 @@ async function openPlantEditor(id) {
 function setSensor(key, value, unit, percent) {
 
   const valueElement = $(`#${key}Value`);
-
   const meter = $(`#${key}Meter`);
 
   if (!valueElement || !meter) return;
@@ -1644,7 +1607,6 @@ function setSensor(key, value, unit, percent) {
   if (value === null || value === undefined || value === "") {
 
     valueElement.textContent = "--";
-
     meter.style.width = "0%";
 
     return;
@@ -1672,7 +1634,6 @@ async function showPlant(id) {
   if (!activePlant) return;
 
   $("#galleryView").classList.add("hidden");
-
   $("#detailView").classList.remove("hidden");
 
   $("#detailPlantName").textContent = activePlant.name;
@@ -1859,11 +1820,8 @@ function renderChart(metric) {
       "Aguardando integração com sensores";
 
     if (chart) {
-
       chart.destroy();
-
       chart = null;
-
     }
 
     return;
@@ -1881,11 +1839,8 @@ function renderChart(metric) {
       "Sem leitura disponível para esta categoria";
 
     if (chart) {
-
       chart.destroy();
-
       chart = null;
-
     }
 
     return;
@@ -1926,17 +1881,12 @@ function renderChart(metric) {
   });
 
   const values = validReports.map(report => {
-
     return Number(report[config.field]);
-
   });
 
   if (chart) {
-
     chart.destroy();
-
     chart = null;
-
   }
 
   chart = new Chart($("#plantChart"), {
@@ -1988,19 +1938,14 @@ function renderChart(metric) {
       maintainAspectRatio: false,
 
       interaction: {
-
         intersect: false,
-
         mode: "index"
-
       },
 
       plugins: {
 
         legend: {
-
           display: false
-
         },
 
         tooltip: {
@@ -2030,15 +1975,11 @@ function renderChart(metric) {
         x: {
 
           grid: {
-
             display: false
-
           },
 
           border: {
-
             display: false
-
           }
 
         },
@@ -2048,23 +1989,17 @@ function renderChart(metric) {
           beginAtZero: metric !== "temp",
 
           grid: {
-
             color: "#edf1eb"
-
           },
 
           border: {
-
             display: false
-
           },
 
           ticks: {
 
             callback(value) {
-
               return `${value}${config.unit}`;
-
             }
 
           }
@@ -2085,9 +2020,7 @@ function renderChart(metric) {
 ========================================================= */
 
 $("#chartMetric").addEventListener("change", event => {
-
   renderChart(event.target.value);
-
 });
 
 
@@ -2098,42 +2031,45 @@ $("#chartMetric").addEventListener("change", event => {
 document.addEventListener("keydown", event => {
 
   if (event.key === "Escape") {
-
     closePlantModal();
-
   }
 
 });
 
 
 /* =========================================================
-   35. NAVEGAÇÃO E BOTÕES
+   35. NAVEGAÇÃO, LOGOUT E LIMPEZA DOS DADOS
 ========================================================= */
 
 $("#backToGallery").addEventListener("click", showGallery);
 
 $("#navPlants").addEventListener("click", showGallery);
 
-
 $("#logoutButton").addEventListener("click", () => {
 
-  sessionStorage.removeItem(SESSION_KEY);
+  // Encerra a sessão e limpa os dados locais solicitados.
+  sessionStorage.clear();
+  localStorage.clear();
 
-  if (chart) {
-
-    chart.destroy();
-
-    chart = null;
-
-  }
-
+  currentSession = null;
+  plants = [];
   activePlant = null;
-
   activePlantReports = [];
 
-  closePlantModal();
+  if (chart) {
+    chart.destroy();
+    chart = null;
+  }
 
+  closePlantModal();
   closeAddPlantForm();
+
+  $("#loginForm").reset();
+  $("#registerForm").reset();
+  $("#forgotForm").reset();
+  $("#plantSearch").value = "";
+
+  renderPlants();
 
   showView("welcomeView");
 
@@ -2146,28 +2082,35 @@ $("#logoutButton").addEventListener("click", () => {
    36. RESTAURAR SESSÃO
 ========================================================= */
 
-try {
+const savedSession = readSession();
 
-  const session = JSON.parse(
-    sessionStorage.getItem(SESSION_KEY) || "null"
-  );
+if (
+  savedSession &&
+  savedSession.id &&
+  savedSession.name &&
+  savedSession.email
+) {
 
-  if (session && session.name && session.email) {
+  enterApp(savedSession).catch(sessionError => {
 
-    enterApp(session);
+    console.error(
+      "Não foi possível restaurar a sessão:",
+      sessionError
+    );
 
-  } else {
+    sessionStorage.removeItem(SESSION_KEY);
+
+    currentSession = null;
 
     showView("welcomeView");
 
-  }
+  });
 
-} catch (errorSession) {
+} else {
 
-  console.error(
-    "Não foi possível restaurar a sessão:",
-    errorSession
-  );
+  sessionStorage.removeItem(SESSION_KEY);
+
+  currentSession = null;
 
   showView("welcomeView");
 
