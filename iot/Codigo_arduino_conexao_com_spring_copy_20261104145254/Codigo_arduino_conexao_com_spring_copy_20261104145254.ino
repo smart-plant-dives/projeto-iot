@@ -8,7 +8,7 @@ const char* WIFI_SSID = "SENAI";
 const char* WIFI_PASSWORD = "senai2026";
 
 // Confirme o IP real do servidor na rede SENAI.
-const char* IP_SERVIDOR = "192.168.0.X";
+const char* IP_SERVIDOR = "192.168.0.100";
 const unsigned long ID_PLANTA = 1;
 const unsigned long INTERVALO_LEITURA_MS = 3000;
 const unsigned long INTERVALO_RECONEXAO_MS = 10000;
