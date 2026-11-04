@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -27,7 +28,8 @@ public class Planta {
 	@Column(name = "nome_planta", nullable = false, length = 70)
 	private String nomePlanta;
 	
-	@Column(name = "url")
+	@Lob
+	@Column(name = "url", columnDefinition = "LONGTEXT")
 	private String url;
 	
 	@Column(name = "especie")
