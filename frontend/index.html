@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SmartPlant | Monitoramento de Plantas</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Biblioteca para os gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- JavaScript do projeto -->
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+
+  <!-- TELA INICIAL -->
+  <section id="welcomeView" class="screen">
+    <div class="auth-container">
+      <div class="brand-icon">
+        <img src="img/logo1.png" alt="Logo SmartPlant">
+      </div>
+
+      <p class="brand-name">SmartPlant</p>
+
+      <h1>Cuide das suas plantas de um jeito inteligente.</h1>
+
+      <p class="auth-description">
+        Acompanhe as condições das suas plantas e descubra
+        como mantê-las saudáveis.
+      </p>
+
+      <button type="button" class="primary-button" data-view="loginView">
+        Entrar na plataforma
+      </button>
+
+      <button type="button" class="secondary-button" data-view="registerView">
+        Criar minha conta
+      </button>
+    </div>
+  </section>
+
+  <!-- TELA DE LOGIN -->
+  <section id="loginView" class="screen hidden">
+    <div class="auth-container">
+
+      <div class="brand-icon">
+        <img src="img/logo1.png" alt="Logo SmartPlant">
+      </div>
+
+      <h1>Que bom ter você de volta!</h1>
+
+      <p class="auth-description">
+        Entre para acompanhar seu jardim.
+      </p>
+
+      <form id="loginForm">
+
+        <label for="loginEmail">E-mail</label>
+        <input
+          type="email"
+          id="loginEmail"
+          placeholder="seuemail@exemplo.com"
+          autocomplete="email"
+          required
+        >
+
+        <label for="loginPassword">Senha</label>
+
+        <div class="password-wrapper">
+          <input
+            type="password"
+            id="loginPassword"
+            placeholder="Digite sua senha"
+            autocomplete="current-password"
+            required
+          >
+
+          <button
+            type="button"
+            class="password-toggle"
+            data-toggle-password="loginPassword"
+            aria-label="Mostrar senha"
+            aria-pressed="false"
+          >👁</button>
+        </div>
+
+        <button
+          type="button"
+          class="text-button forgot-link"
+          data-view="forgotView"
+        >
+          Esqueci minha senha
+        </button>
+
+        <p id="loginError" class="form-error" role="alert"></p>
+
+        <button type="submit" class="primary-button">
+          Entrar
+        </button>
+
+      </form>
+
+      <p class="form-switch">
+        Ainda não tem uma conta?
+
+        <button type="button" class="text-button" data-view="registerView">
+          Cadastre-se
+        </button>
+      </p>
+
+      <button type="button" class="back-link" data-view="welcomeView">
+        ← Voltar ao início
+      </button>
+
+    </div>
+  </section>
+
+  <!-- TELA DE CADASTRO -->
+  <section id="registerView" class="screen hidden">
+    <div class="auth-container">
+
+      <div class="brand-icon">
+        <img src="img/logo1.png" alt="Logo SmartPlant">
+      </div>
+
+      <h1>Crie sua conta</h1>
+
+      <p class="auth-description">
+        Comece a cuidar melhor das suas plantas.
+      </p>
+
+      <form id="registerForm">
+
+        <label for="registerName">Nome completo</label>
+        <input
+          type="text"
+          id="registerName"
+          placeholder="Como podemos chamar você?"
+          autocomplete="name"
+          required
+        >
+
+        <label for="registerEmail">E-mail</label>
+        <input
+          type="email"
+          id="registerEmail"
+          placeholder="seuemail@exemplo.com"
+          autocomplete="email"
+          required
+        >
+
+        <label for="registerPassword">Senha</label>
+
+        <div class="password-wrapper">
+          <input
+            type="password"
+            id="registerPassword"
+            placeholder="Crie uma senha"
+            autocomplete="new-password"
+            minlength="4"
+            required
+          >
+
+          <button
+            type="button"
+            class="password-toggle"
+            data-toggle-password="registerPassword"
+            aria-label="Mostrar senha"
+            aria-pressed="false"
+          >👁</button>
+        </div>
+
+        <label for="registerConfirm">Confirmar senha</label>
+
+        <div class="password-wrapper">
+          <input
+            type="password"
+            id="registerConfirm"
+            placeholder="Digite a senha novamente"
+            autocomplete="new-password"
+            required
+          >
+
+          <button
+            type="button"
+            class="password-toggle"
+            data-toggle-password="registerConfirm"
+            aria-label="Mostrar senha"
+            aria-pressed="false"
+          >👁</button>
+        </div>
+
+        <p id="registerError" class="form-error" role="alert"></p>
+
+        <button type="submit" class="primary-button">
+          Criar conta
+        </button>
+
+      </form>
+
+      <p class="form-switch">
+        Já possui uma conta?
+
+        <button type="button" class="text-button" data-view="loginView">
+          Fazer login
+        </button>
+      </p>
+
+      <button type="button" class="back-link" data-view="welcomeView">
+        ← Voltar ao início
+      </button>
+
+    </div>
+  </section>
+
+  <!-- RECUPERAÇÃO DE SENHA -->
+  <section id="forgotView" class="screen hidden">
+    <div class="auth-container">
+
+      <div class="brand-icon">
+        <img src="img/logo1.png" alt="Logo SmartPlant">
+      </div>
+
+      <h1>Recuperar senha</h1>
+
+      <p class="auth-description">
+        Informe seu e-mail para simular a recuperação da sua conta.
+      </p>
+
+      <form id="forgotForm">
+
+        <label for="forgotEmail">E-mail cadastrado</label>
+
+        <input
+          type="email"
+          id="forgotEmail"
+          placeholder="seuemail@exemplo.com"
+          autocomplete="email"
+          required
+        >
+
+        <p id="forgotError" class="form-error" role="alert"></p>
+
+        <p id="forgotSuccess" class="success-message hidden" role="status">
+          Solicitação simulada! Nenhum e-mail real foi enviado.
+        </p>
+
+        <button type="submit" class="primary-button">
+          Recuperar acesso
+        </button>
+
+      </form>
+
+      <button type="button" class="back-link" data-view="loginView">
+        ← Voltar para o login
+      </button>
+
+    </div>
+  </section>
+
+  <!-- APLICAÇÃO PRINCIPAL -->
+  <div id="appView" class="hidden">
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
+
+      <div class="sidebar-brand">
+
+        <div>
+          <strong>SmartPlant</strong>
+          <small>Monitoramento</small>
+        </div>
+
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <button type="button" id="navPlants" class="nav-item active">
+          Minhas plantas
+        </button>
+
+      </nav>
+
+      <div class="sidebar-footer">
+
+        <p style="font-size: 13px;">Seu jardim, mais saudável.</p>
+
+        <button type="button" id="logoutButton" class="logout-button">
+          ↪ Sair da conta
+        </button>
+
+      </div>
+
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+
+      <!-- CABEÇALHO -->
+      <header class="topbar">
+
+        <div>
+          <p class="eyebrow">PAINEL DE CONTROLE</p>
+
+          <h1>
+            Olá, <span id="userName">usuário</span>! 
+          </h1>
+
+          <p>Acompanhe o desenvolvimento do seu jardim.</p>
+        </div>
+
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          Ambiente de demonstração
+        </div>
+
+      </header>
+
+      <!-- GALERIA DE PLANTAS -->
+      <section id="galleryView">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>Minhas plantas</h2>
+            <p>Consulte as plantas cadastradas e suas leituras.</p>
+          </div>
+
+          <button
+            type="button"
+            id="refreshGallery"
+            class="secondary-button compact"
+          >
+            ↻ Atualizar
+          </button>
+
+        </div>
+
+        <!-- RESUMO -->
+        <div class="summary-grid">
+
+          <article class="summary-card">
+
+            <div class="summary-icon">
+              <img src="img/plantar.png" alt="Planta">
+            </div>
+
+            <div>
+              <p style="font-size: 12px;">Total de plantas</p>
+              <strong id="totalPlants">0</strong>
+            </div>
+
+          </article>
+
+          <article class="summary-card">
+
+            <div class="summary-icon">
+              <img src="img/copia.png" alt="Dispositivo">
+            </div>
+
+            <div>
+              <p style="font-size: 12px;">Dispositivos cadastrados</p>
+              <strong id="connectedDevices">0</strong>
+            </div>
+
+          </article>
+
+        </div>
+
+        <!-- BUSCA -->
+        <div class="search-container">
+
+          <span>⌕</span>
+
+          <input
+            type="search"
+            id="plantSearch"
+            placeholder="Buscar por nome, espécie ou ambiente..."
+            aria-label="Buscar plantas"
+          >
+
+        </div>
+
+        <p id="galleryStatus" class="muted-text">
+          Carregando plantas...
+        </p>
+
+        <!-- CARDS DAS PLANTAS -->
+        <div id="plantsGrid" class="plants-grid"></div>
+
+        <!-- CARD CLICÁVEL PARA ADICIONAR PLANTA -->
+        <button
+          type="button"
+          id="openAddPlantForm"
+          class="add-plant-card"
+          aria-expanded="false"
+          aria-controls="addPlantFormContainer"
+        >
+
+          <span class="add-plant-card-icon">＋</span>
+
+          <span class="add-plant-card-content">
+            <strong>Adicionar nova planta</strong>
+
+            <small>
+              Cadastre uma planta na sua coleção.
+            </small>
+          </span>
+
+          <span class="add-plant-card-arrow">›</span>
+
+        </button>
+
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <section
+          id="addPlantFormContainer"
+          class="add-plant-section hidden"
+        >
+
+          <div class="add-plant-heading">
+
+            <div class="add-plant-icon">＋</div>
+
+            <div>
+              <h2>Nova planta</h2>
+
+              <p>
+                Preencha as informações para adicionar uma planta
+                à sua coleção.
+              </p>
+            </div>
+
+          </div>
+
+          <form id="addPlantForm" class="add-plant-form">
+
+            <!-- NOME POPULAR -->
+            <div class="form-field">
+
+              <label for="newPlantName">
+                Nome da planta *
+              </label>
+
+              <input
+                type="text"
+                id="newPlantName"
+                placeholder="Ex.: Samambaia"
+                required
+              >
+
+            </div>
+
+            <!-- NOME CIENTÍFICO -->
+            <div class="form-field">
+
+              <label for="newPlantLatin">
+                Nome científico
+              </label>
+
+              <input
+                type="text"
+                id="newPlantLatin"
+                placeholder="Ex.: Nephrolepis exaltata"
+              >
+
+            </div>
+
+            <!-- FOTO -->
+            <div class="form-field photo-field full-width">
+
+              <label for="newPlantPhoto">
+                Foto da planta
+              </label>
+
+              <input
+                type="file"
+                id="newPlantPhoto"
+                accept="image/jpeg,image/png,image/webp"
+              >
+
+              <small class="field-hint">
+                Formatos permitidos: JPG, PNG e WEBP.
+                Tamanho máximo: 5 MB.
+              </small>
+
+              <div
+                id="newPlantPhotoPreview"
+                class="photo-preview hidden"
+              >
+                <img
+                  alt="Pré-visualização da planta"
+                >
+              </div>
+
+            </div>
+
+            <p
+              id="addPlantError"
+              class="form-error full-width"
+              role="alert"
+            ></p>
+
+            <!-- BOTÕES -->
+            <div class="form-actions full-width">
+
+              <button
+                type="button"
+                id="cancelAddPlant"
+                class="secondary-button"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                class="primary-button"
+              >
+                + Cadastrar planta
+              </button>
+
+            </div>
+
+          </form>
+
+          <p class="form-note">
+            As informações dos sensores serão preenchidas futuramente
+            pela integração com a API e os dispositivos IoT.
+          </p>
+
+        </section>
+
+      </section>
+
+      <!-- DETALHES DA PLANTA -->
+      <section id="detailView" class="hidden">
+
+        <button
+          type="button"
+          id="backToGallery"
+          class="back-link detail-back"
+        >
+          ← Voltar para minhas plantas
+        </button>
+
+        <!-- IDENTIFICAÇÃO DA PLANTA -->
+        <div class="detail-header">
+
+          <div class="detail-plant-identity">
+
+            <div id="detailPlantIcon" class="detail-plant-icon">
+              🌿
+            </div>
+
+            <div>
+              <p class="eyebrow">DETALHES DA PLANTA</p>
+
+              <h2 id="detailPlantName">
+                Nome da planta
+              </h2>
+
+              <p id="detailPlantMeta">
+                Espécie e ambiente
+              </p>
+            </div>
+
+          </div>
+
+          <span id="connectionBadge" class="connection-badge">
+            ● Simulado
+          </span>
+
+        </div>
+
+        <!-- INDICADORES DOS SENSORES -->
+        <div class="sensor-grid">
+
+          <article class="sensor-card soil-card">
+
+            <div class="sensor-heading">
+              <span class="sensor-icon">💧</span>
+              <span class="sensor-category">SOLO</span>
+            </div>
+
+            <p>Umidade do solo</p>
+
+            <strong id="soilValue">--%</strong>
+
+            <div class="meter-track">
+              <div id="soilMeter" class="meter-fill soil-fill"></div>
+            </div>
+
+          </article>
+
+          <article class="sensor-card temp-card">
+
+            <div class="sensor-heading">
+              <span class="sensor-icon">🌡️</span>
+              <span class="sensor-category">TEMPERATURA</span>
+            </div>
+
+            <p>Temperatura ambiente</p>
+
+            <strong id="tempValue">-- °C</strong>
+
+            <div class="meter-track">
+              <div id="tempMeter" class="meter-fill temp-fill"></div>
+            </div>
+
+          </article>
+
+          <article class="sensor-card air-card">
+
+            <div class="sensor-heading">
+              <span class="sensor-icon">🌬️</span>
+              <span class="sensor-category">AMBIENTE</span>
+            </div>
+
+            <p>Umidade do ar</p>
+
+            <strong id="airValue">--%</strong>
+
+            <div class="meter-track">
+              <div id="airMeter" class="meter-fill air-fill"></div>
+            </div>
+
+          </article>
+
+          <article class="sensor-card water-card">
+
+            <div class="sensor-heading">
+              <span class="sensor-icon">🫧</span>
+              <span class="sensor-category">RESERVATÓRIO</span>
+            </div>
+
+            <p>Nível de água</p>
+
+            <strong id="waterValue">--%</strong>
+
+            <div class="meter-track">
+              <div id="waterMeter" class="meter-fill water-fill"></div>
+            </div>
+
+          </article>
+
+        </div>
+
+        <!-- GRÁFICO -->
+        <section class="chart-card">
+
+          <div class="chart-heading">
+
+            <div>
+              <p class="eyebrow">ACOMPANHAMENTO</p>
+
+              <h2>Histórico dos sensores</h2>
+
+              <p>
+                Visualize a variação da categoria selecionada.
+              </p>
+            </div>
+
+            <div class="chart-filter">
+
+              <label for="chartMetric">
+                Categoria
+              </label>
+
+              <select id="chartMetric">
+                <option value="soil">Umidade do solo</option>
+                <option value="temp">Temperatura</option>
+                <option value="air">Umidade do ar</option>
+                <option value="water">Nível de água</option>
+              </select>
+
+            </div>
+
+          </div>
+
+          <div class="chart-current">
+
+            <div>
+              <span id="metricLabel">
+                Umidade do solo atual
+              </span>
+
+              <strong id="metricCurrent">--</strong>
+            </div>
+
+            <span id="metricTrend" class="metric-trend">
+              Histórico ilustrativo
+            </span>
+
+          </div>
+
+          <div class="chart-container">
+
+            <canvas
+              id="plantChart"
+              aria-label="Gráfico histórico dos sensores"
+            >
+              Seu navegador não suporta a exibição do gráfico.
+            </canvas>
+
+          </div>
+
+          <div class="chart-legend">
+
+            <span>
+              <i class="legend-dot soil-legend"></i>
+              Solo
+            </span>
+
+            <span>
+              <i class="legend-dot temp-legend"></i>
+              Temperatura
+            </span>
+
+            <span>
+              <i class="legend-dot air-legend"></i>
+              Umidade do ar
+            </span>
+
+            <span>
+              <i class="legend-dot water-legend"></i>
+              Nível de água
+            </span>
+
+          </div>
+
+        </section>
+
+        <!-- INFORMAÇÕES ABAIXO DO GRÁFICO -->
+        <section class="detail-info-grid">
+
+          <article class="info-card">
+
+            <div class="info-card-heading">
+
+              <span class="info-icon">🌱</span>
+
+              <div>
+                <h3>Orientações</h3>
+                <p>Informações sobre as leituras</p>
+              </div>
+
+            </div>
+
+            <h4 id="careTitle">
+              Leituras demonstrativas
+            </h4>
+
+            <p id="careText">
+              As informações serão exibidas conforme a planta selecionada.
+            </p>
+
+          </article>
+
+          <article class="info-card">
+
+            <div class="info-card-heading">
+
+              <span class="info-icon">📋</span>
+
+              <div>
+                <h3>Informações do monitoramento</h3>
+                <p>Dados do dispositivo</p>
+              </div>
+
+            </div>
+
+            <div class="info-list">
+
+              <div class="info-row">
+                <span>Última atualização</span>
+                <strong id="infoDate">--:--</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Dispositivo</span>
+                <strong id="infoDevice">--</strong>
+              </div>
+
+              <div class="info-row">
+                <span>Situação dos dados</span>
+                <strong id="detailStatus">Demonstração</strong>
+              </div>
+
+            </div>
+
+          </article>
+
+        </section>
+
+      </section>
+
+      <!-- RODAPÉ -->
+      <footer class="main-footer">
+
+        <span>SmartPlant</span>
+
+        <span>
+          Monitoramento inteligente de plantas
+        </span>
+
+      </footer>
+
+    </main>
+
+  </div>
+
+  <!-- NOTIFICAÇÕES -->
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+</body>
+</html>
