@@ -30,12 +30,22 @@ public class PlantaController {
 
     @GetMapping
     public ResponseEntity<List<Planta>> listarTodas() {
-
         return ResponseEntity.ok(service.listarTodas());
     }
 
+    // PLANTAS DE UM USUÁRIO
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<List<Planta>> listarPorUsuario(
+            @PathVariable Long idUsuario) {
+
+        return ResponseEntity.ok(
+                service.listarPorUsuario(idUsuario)
+        );
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Planta> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Planta> buscarPorId(
+            @PathVariable Long id) {
 
         Optional<Planta> planta = service.buscarPorId(id);
 
@@ -47,7 +57,8 @@ public class PlantaController {
     }
 
     @PostMapping
-    public ResponseEntity<Planta> cadastrar(@Valid @RequestBody Planta planta) {
+    public ResponseEntity<Planta> cadastrar(
+            @Valid @RequestBody Planta planta) {
 
         Planta novaPlanta = service.cadastrar(planta);
 
@@ -59,7 +70,8 @@ public class PlantaController {
             @PathVariable Long id,
             @Valid @RequestBody Planta planta) {
 
-        Optional<Planta> plantaAtualizada = service.atualizar(id, planta);
+        Optional<Planta> plantaAtualizada =
+                service.atualizar(id, planta);
 
         if (plantaAtualizada.isPresent()) {
             return ResponseEntity.ok(plantaAtualizada.get());
@@ -69,7 +81,8 @@ public class PlantaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(
+            @PathVariable Long id) {
 
         if (service.excluir(id)) {
             return ResponseEntity.noContent().build();
