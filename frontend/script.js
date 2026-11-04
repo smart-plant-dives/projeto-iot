@@ -853,6 +853,7 @@ async function showGallery() {
 }
 
 
+
 /* =========================================================
    23. RENDERIZAR PLANTAS
 ========================================================= */
@@ -937,23 +938,37 @@ function renderPlants() {
             Ver detalhes
           </button>
 
-          <button
-            type="button"
-            class="plant-edit-button"
-            data-edit="${escapeHTML(plant.id)}"
-            aria-label="Editar planta"
-          >
-            ✎
-          </button>
+          <details class="plant-actions-menu">
 
-          <button
-            type="button"
-            class="plant-delete-button"
-            data-delete="${escapeHTML(plant.id)}"
-            aria-label="Excluir planta"
-          >
-            ×
-          </button>
+            <summary
+              class="plant-menu-trigger"
+              title="Mais opções"
+              aria-label="Mais opções para ${escapeHTML(plant.name)}"
+            >
+              ⋯
+            </summary>
+
+            <div class="plant-menu-dropdown">
+
+              <button
+                type="button"
+                class="plant-edit-button"
+                data-edit="${escapeHTML(plant.id)}"
+              >
+                Editar
+              </button>
+
+              <button
+                type="button"
+                class="plant-delete-button"
+                data-delete="${escapeHTML(plant.id)}"
+              >
+                Excluir
+              </button>
+
+            </div>
+
+          </details>
 
         </div>
 
@@ -981,6 +996,7 @@ function renderPlants() {
   $("#galleryStatus").textContent =
     `${filtered.length} planta(s) encontrada(s).`;
 }
+
 
 
 /* =========================================================
@@ -1138,6 +1154,7 @@ $("#addPlantForm").addEventListener("submit", async event => {
 });
 
 
+
 /* =========================================================
    27. AÇÕES DOS CARDS
 ========================================================= */
@@ -1149,6 +1166,7 @@ $("#plantsGrid").addEventListener("click", async event => {
   const detailsButton = event.target.closest("[data-open]");
   const card = event.target.closest("[data-plant]");
 
+  // EDITAR PLANTA
   if (editButton) {
 
     event.stopPropagation();
@@ -1158,6 +1176,7 @@ $("#plantsGrid").addEventListener("click", async event => {
     return;
   }
 
+  // EXCLUIR PLANTA
   if (deleteButton) {
 
     event.stopPropagation();
@@ -1197,6 +1216,7 @@ $("#plantsGrid").addEventListener("click", async event => {
     return;
   }
 
+  // ABRIR DETALHES
   if (detailsButton) {
 
     await showPlant(detailsButton.dataset.open);
@@ -1204,8 +1224,16 @@ $("#plantsGrid").addEventListener("click", async event => {
     return;
   }
 
+  // NÃO ABRIR O CARD AO INTERAGIR COM O MENU
+  if (event.target.closest(".plant-actions-menu")) {
+    return;
+  }
+
+  // ABRIR DETALHES AO CLICAR NO CARD
   if (card && !event.target.closest("button")) {
+
     await showPlant(card.dataset.plant);
+
   }
 
 });
@@ -1223,6 +1251,22 @@ $("#plantsGrid").addEventListener("keydown", async event => {
     await showPlant(event.target.dataset.plant);
 
   }
+
+});
+
+
+/* FECHAR MENU AO CLICAR FORA */
+
+document.addEventListener("click", event => {
+
+  document.querySelectorAll(".plant-actions-menu[open]")
+    .forEach(menu => {
+
+      if (!menu.contains(event.target)) {
+        menu.removeAttribute("open");
+      }
+
+    });
 
 });
 

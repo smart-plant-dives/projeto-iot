@@ -2044,3 +2044,1311 @@ p {
   }
 
 }
+
+
+/* =========================================================
+   SMARTPLANT — REDESIGN VISUAL
+   Conceito: Modern SaaS / Plant Monitoring
+   Somente CSS — estrutura e funcionalidades preservadas
+========================================================= */
+
+/* 01. IDENTIDADE VISUAL */
+
+:root {
+  --green-dark: #193c2b;
+  --green-main: #356b49;
+  --green-light: #e7eee8;
+  --green-soft: #f3f6f3;
+
+  --background: #f5f6f4;
+  --surface: #ffffff;
+
+  --text-primary: #202c24;
+  --text-secondary: #778078;
+
+  --border: #e4e8e3;
+
+  --danger: #c65353;
+  --warning: #c58b3d;
+
+  --shadow: 0 2px 8px rgba(24, 45, 30, 0.035);
+  --shadow-hover: 0 10px 28px rgba(24, 45, 30, 0.09);
+
+  --radius-small: 7px;
+  --radius-medium: 11px;
+  --radius-large: 15px;
+
+  --transition: 0.2s ease;
+}
+
+/* 02. BASE */
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  color: var(--text-primary);
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: -0.6px;
+}
+
+h1 {
+  font-size: 29px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 21px;
+  font-weight: 750;
+}
+
+h3 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+p {
+  line-height: 1.55;
+}
+
+button {
+  font-family: inherit;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* 03. BOTÕES */
+
+.primary-button,
+.secondary-button {
+  min-height: 43px;
+  padding: 11px 19px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+  transition: var(--transition);
+}
+
+.primary-button {
+  color: #fff;
+  background: #356b49;
+  border: 1px solid #356b49;
+  box-shadow: none;
+}
+
+.primary-button:hover {
+  background: #244d34;
+  border-color: #244d34;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(35, 75, 49, 0.16);
+}
+
+.secondary-button {
+  background: #fff;
+  color: #405448;
+  border: 1px solid #dfe5df;
+}
+
+.secondary-button:hover {
+  background: #f3f6f3;
+  border-color: #bdcbbf;
+}
+
+.text-button,
+.back-link {
+  color: #356b49;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* 04. AUTENTICAÇÃO */
+
+.screen {
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(207, 221, 207, 0.28),
+      transparent 30%
+    ),
+    #f3f5f2;
+}
+
+.auth-container {
+  max-width: 420px;
+  padding: 42px;
+  background: #fff;
+  border: 1px solid #e4e8e3;
+  border-radius: 13px;
+  box-shadow: 0 18px 55px rgba(28, 48, 33, 0.075);
+  text-align: left;
+}
+
+.auth-container .brand-icon {
+  margin-left: 0;
+  margin-right: auto;
+  width: 58px;
+  height: 58px;
+}
+
+.brand-name {
+  color: #315f40;
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 30px;
+}
+
+.auth-container h1 {
+  font-size: 25px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+.auth-description {
+  color: #7c877e;
+  font-size: 13px;
+  margin-bottom: 27px;
+}
+
+.auth-container label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #344239;
+  margin-bottom: 8px;
+}
+
+.auth-container input {
+  height: 45px;
+  padding: 12px 13px;
+  margin-bottom: 19px;
+  background: #fbfcfb;
+  border: 1px solid #dfe5df;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.auth-container input:focus {
+  border-color: #527e5e;
+  box-shadow: 0 0 0 3px rgba(53, 107, 73, 0.08);
+}
+
+.auth-container form > .primary-button {
+  margin-top: 8px;
+  height: 46px;
+}
+
+.form-switch {
+  font-size: 12px;
+  color: #879087;
+  text-align: center;
+}
+
+.password-toggle {
+  color: #78847b;
+}
+
+/* 05. MENU LATERAL */
+
+.sidebar {
+  width: 245px;
+  padding: 27px 17px 20px;
+  background: #1d3829;
+  border-right: none;
+  box-shadow: 4px 0 18px rgba(19, 42, 27, 0.07);
+}
+
+.sidebar-brand {
+  padding: 8px 9px 42px;
+}
+
+.sidebar-brand .brand-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  background: rgba(255,255,255,0.09);
+  border-radius: 9px;
+}
+
+.sidebar-brand strong {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.sidebar-brand small {
+  color: #a6b9a9;
+  font-size: 11px;
+}
+
+.sidebar-nav {
+  gap: 6px;
+}
+
+.nav-item {
+  min-height: 45px;
+  padding: 12px 13px;
+  color: #b6c3b9;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.nav-item span {
+  font-size: 17px;
+  opacity: 0.9;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+}
+
+.nav-item.active {
+  background: #345b40;
+  color: #fff;
+  box-shadow: inset 3px 0 #a4c49e;
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding: 19px 8px 4px;
+}
+
+.sidebar-footer p {
+  color: #a6b9a9;
+  font-size: 10px;
+}
+
+.logout-button {
+  background: rgba(255,255,255,0.07);
+  color: #e0a6a0;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 7px;
+  padding: 12px;
+  font-size: 12px;
+}
+
+.logout-button:hover {
+  background: rgba(198, 83, 83, 0.17);
+}
+
+/* 06. ÁREA PRINCIPAL */
+
+#appView {
+  background: var(--background);
+}
+
+.main-content {
+  margin-left: 245px;
+  padding: 36px 43px 25px;
+  max-width: none;
+}
+
+/* 07. CABEÇALHO */
+
+.topbar {
+  margin-bottom: 43px;
+  padding-bottom: 23px;
+  border-bottom: 1px solid #e5e9e4;
+}
+
+.topbar h1 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -1.1px;
+  margin-bottom: 5px;
+}
+
+.topbar > div:first-child > p:last-child {
+  color: #818b82;
+  font-size: 12px;
+}
+
+.status-indicator {
+  background: #fff;
+  border: 1px solid #e2e8e1;
+  border-radius: 7px;
+  padding: 10px 13px;
+  color: #66736a;
+  font-size: 11px;
+  box-shadow: none;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+}
+
+/* 08. TÍTULOS DE SEÇÃO */
+
+.section-heading {
+  margin-bottom: 19px;
+}
+
+.section-heading h2 {
+  font-size: 20px;
+  letter-spacing: -0.7px;
+}
+
+.section-heading p {
+  color: #858e86;
+  font-size: 12px;
+}
+
+/* 09. RESUMO */
+
+.summary-grid {
+  gap: 16px;
+  margin-bottom: 27px;
+}
+
+.summary-card {
+  min-height: 108px;
+  padding: 21px;
+  background: #fff;
+  border: 1px solid #e3e8e2;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  gap: 16px;
+  transition: var(--transition);
+}
+
+.summary-card:hover {
+  border-color: #cbd8cb;
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.summary-icon {
+  width: 43px;
+  height: 43px;
+  padding: 9px;
+  border-radius: 9px;
+  background: #edf3ed;
+  flex-shrink: 0;
+}
+
+.summary-card p {
+  font-size: 11px;
+  color: #818b83;
+  margin-bottom: 5px;
+}
+
+.summary-card strong {
+  color: #263b2d;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+/* 10. PESQUISA */
+
+.search-container {
+  margin: 25px 0 17px;
+  min-height: 46px;
+  padding: 0 14px;
+  background: #fff;
+  border: 1px solid #e1e7e0;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.search-container:focus-within {
+  border-color: #77957c;
+  box-shadow: 0 0 0 3px rgba(53, 107, 73, 0.07);
+}
+
+.search-container span {
+  font-size: 19px;
+  color: #738b77;
+}
+
+.search-container input {
+  font-size: 12px;
+}
+
+.search-container input::placeholder {
+  color: #a0a9a1;
+}
+
+/* 11. GALERIA */
+
+.plants-grid {
+  gap: 19px;
+  margin-top: 17px;
+}
+
+.plant-card {
+  background: #fff;
+  border: 1px solid #e3e8e2;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.plant-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd8cb;
+  box-shadow: var(--shadow-hover);
+}
+
+.plant-card-photo {
+  height: 190px;
+  background: #e9eee8;
+}
+
+.plant-card-photo img {
+  transition: transform 0.45s ease;
+}
+
+.plant-card-content {
+  padding: 17px 18px 18px;
+}
+
+.plant-card-content h3 {
+  font-size: 15px;
+  font-weight: 750;
+  color: #29392e;
+  margin-bottom: 5px;
+}
+
+.plant-species {
+  color: #8a938b;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+.plant-place {
+  padding: 5px 8px;
+  border-radius: 5px;
+  background: #eff4ef;
+  color: #486e50;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.plant-card-actions {
+  gap: 7px;
+}
+
+.plant-details-button {
+  padding: 10px;
+  border-radius: 6px;
+  background: #315f40;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.plant-details-button:hover {
+  background: #244b32;
+}
+
+.plant-edit-button,
+.plant-delete-button {
+  width: 35px;
+  height: 35px;
+  border-radius: 6px;
+  border: 1px solid #e2e8e1;
+  font-size: 15px;
+}
+
+.plant-edit-button {
+  color: #426d4c;
+}
+
+.plant-edit-button:hover {
+  background: #edf3ed;
+}
+
+.plant-delete-button {
+  color: #c65353;
+}
+
+.plant-delete-button:hover {
+  background: #fff3f2;
+}
+
+/* 12. ADICIONAR PLANTA */
+
+.add-plant-card {
+  margin-top: 23px;
+  padding: 19px 21px;
+  background: #fafcfa;
+  border: 1px dashed #b8c8b8;
+  border-radius: 9px;
+  box-shadow: none;
+  transition: var(--transition);
+}
+
+.add-plant-card:hover {
+  background: #f0f5f0;
+  border-color: #6e9173;
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+
+.add-plant-card-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 8px;
+  background: #e7eee7;
+  color: #356b49;
+  font-size: 25px;
+}
+
+.add-plant-card-content strong {
+  color: #2b4833;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.add-plant-card-content small {
+  color: #858f86;
+  font-size: 11px;
+}
+
+.add-plant-card-arrow {
+  font-size: 22px;
+  color: #52765a;
+}
+
+/* 13. FORMULÁRIO */
+
+.add-plant-section {
+  padding: 27px;
+  background: #fff;
+  border: 1px solid #e3e8e2;
+  border-radius: 11px;
+  box-shadow: var(--shadow);
+}
+
+.add-plant-heading {
+  padding-bottom: 19px;
+  border-bottom: 1px solid #e9ede8;
+}
+
+.add-plant-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 8px;
+  background: #eaf0e9;
+  color: #356b49;
+}
+
+.add-plant-heading h2 {
+  font-size: 18px;
+}
+
+.add-plant-heading p {
+  font-size: 11px;
+  color: #858f86;
+}
+
+.form-field label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #354239;
+}
+
+.form-field input {
+  min-height: 43px;
+  padding: 12px 13px;
+  background: #fbfcfb;
+  border: 1px solid #dfe5de;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.form-field input:focus {
+  border-color: #66896c;
+  box-shadow: 0 0 0 3px rgba(53, 107, 73, 0.07);
+}
+
+.form-field input::placeholder {
+  color: #a2aaa3;
+}
+
+.field-hint {
+  color: #8b958c;
+  font-size: 10px;
+}
+
+.photo-field input[type="file"] {
+  background: #f6f8f5;
+  border: 1px dashed #bdcdbb;
+  border-radius: 7px;
+}
+
+.photo-preview {
+  border: 1px solid #e3e8e2;
+  border-radius: 8px;
+}
+
+.form-actions {
+  border-top: 1px solid #e7ece6;
+  padding-top: 17px;
+}
+
+.form-note {
+  background: #f2f6f1;
+  border-radius: 7px;
+  color: #758177;
+}
+
+/* 14. MODAL DE EDIÇÃO */
+
+.plant-modal-backdrop {
+  background: rgba(18, 35, 23, 0.63);
+  backdrop-filter: blur(4px);
+}
+
+.plant-modal-content {
+  max-width: 550px;
+  padding: 29px;
+  border-radius: 12px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.22);
+}
+
+.plant-modal-heading {
+  border-bottom: 1px solid #e6ebe5;
+}
+
+.plant-modal-heading h2 {
+  font-size: 21px;
+}
+
+.modal-description {
+  color: #838d84;
+  font-size: 12px;
+}
+
+.modal-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  background: #f1f4f0;
+  font-size: 21px;
+}
+
+.edit-photo-preview {
+  border-radius: 9px;
+  border-color: #e2e8e1;
+}
+
+.edit-photo-information strong {
+  color: #2d4533;
+  font-size: 13px;
+}
+
+.edit-photo-button {
+  background: #eaf0e9;
+  color: #315f40;
+  border-radius: 6px;
+}
+
+.edit-photo-button:hover {
+  background: #dce8dc;
+}
+
+.edit-section-title h3 {
+  font-size: 14px;
+}
+
+.edit-section-title p {
+  color: #838d84;
+}
+
+/* 15. DETALHES DA PLANTA */
+
+.detail-header {
+  padding: 23px;
+  border: 1px solid #e3e8e2;
+  border-radius: 11px;
+  box-shadow: var(--shadow);
+}
+
+.detail-plant-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 10px;
+  background: #eaf0e9;
+}
+
+.detail-header h2 {
+  font-size: 22px;
+}
+
+.detail-header p:last-child {
+  color: #818c83;
+  font-size: 12px;
+}
+
+.connection-badge {
+  background: #edf4ed;
+  color: #386b46;
+  border: 1px solid #dce8dc;
+  border-radius: 5px;
+  padding: 8px 11px;
+  font-size: 10px;
+}
+
+/* 16. SENSORES */
+
+.sensor-grid {
+  gap: 15px;
+}
+
+.sensor-card {
+  padding: 19px;
+  background: #fff;
+  border: 1px solid #e3e8e2;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.sensor-card:hover {
+  border-color: #cbd8cb;
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.sensor-heading {
+  margin-bottom: 17px;
+}
+
+.sensor-icon {
+  font-size: 20px;
+}
+
+.sensor-category {
+  color: #929b93;
+  font-size: 9px;
+  letter-spacing: 1px;
+}
+
+.sensor-card > p {
+  color: #7d887f;
+  font-size: 11px;
+}
+
+.sensor-card > strong {
+  font-size: 26px;
+  color: #273a2d;
+  letter-spacing: -0.8px;
+}
+
+.meter-track {
+  height: 6px;
+  background: #edf0ec;
+}
+
+.soil-fill {
+  background: #4e805b;
+}
+
+.temp-fill {
+  background: #c98a4d;
+}
+
+.air-fill {
+  background: #6493a9;
+}
+
+.water-fill {
+  background: #7788b0;
+}
+
+/* 17. GRÁFICO */
+
+.chart-card {
+  padding: 25px;
+  background: #fff;
+  border: 1px solid #e3e8e2;
+  border-radius: 11px;
+  box-shadow: var(--shadow);
+}
+
+.chart-heading h2 {
+  font-size: 18px;
+}
+
+.chart-heading p:last-child {
+  color: #828d84;
+  font-size: 11px;
+}
+
+.chart-filter label {
+  color: #707d73;
+  font-size: 10px;
+}
+
+.chart-filter select {
+  min-height: 39px;
+  background: #fbfcfb;
+  border: 1px solid #dfe5de;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.chart-current {
+  padding: 15px 17px;
+  background: #f2f6f1;
+  border: 1px solid #e8eee6;
+  border-radius: 8px;
+}
+
+.chart-current span {
+  color: #7e897f;
+  font-size: 10px;
+}
+
+.chart-current strong {
+  color: #294b32;
+  font-size: 22px;
+}
+
+.metric-trend {
+  color: #3d754c !important;
+}
+
+.chart-legend {
+  border-top: 1px solid #e8ece7;
+}
+
+.chart-legend span {
+  color: #7d887f;
+  font-size: 10px;
+}
+
+/* 18. INFORMAÇÕES COMPLEMENTARES */
+
+.detail-info-grid {
+  gap: 16px;
+}
+
+.info-card {
+  padding: 21px;
+  border: 1px solid #e3e8e2;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.info-icon {
+  width: 39px;
+  height: 39px;
+  background: #eaf0e9;
+  border-radius: 8px;
+  color: #356b49;
+}
+
+.info-card-heading h3 {
+  font-size: 13px;
+}
+
+.info-card-heading p {
+  color: #89928a;
+  font-size: 10px;
+}
+
+.info-card h4 {
+  font-size: 12px;
+}
+
+.info-card > p {
+  color: #79847b;
+  font-size: 11px;
+}
+
+.info-row {
+  border-bottom: 1px solid #edf0ec;
+}
+
+.info-row span {
+  color: #7c877e;
+  font-size: 11px;
+}
+
+.info-row strong {
+  color: #355c3e;
+  font-size: 11px;
+}
+
+/* 19. RODAPÉ */
+
+.main-footer {
+  border-top: 1px solid #e3e8e2;
+  color: #929b93;
+  font-size: 10px;
+}
+
+.main-footer span:first-child {
+  color: #456e4d;
+}
+
+/* 20. TOAST */
+
+.toast {
+  background: #234631;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 13px 17px;
+  box-shadow: 0 8px 25px rgba(20, 43, 27, 0.2);
+}
+
+/* 21. ESTADO VAZIO */
+
+.empty-state {
+  padding: 45px 20px;
+  background: #fff;
+  border: 1px dashed #cbd7ca;
+  border-radius: 10px;
+}
+
+.empty-state span {
+  font-size: 40px;
+}
+
+.empty-state h3 {
+  font-size: 15px;
+}
+
+.empty-state p {
+  color: #879188;
+  font-size: 12px;
+}
+
+/* 22. RESPONSIVIDADE */
+
+@media (max-width: 1200px) {
+  .main-content {
+    padding: 30px;
+  }
+
+  .plants-grid {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 850px) {
+  .sidebar {
+    background: #1d3829;
+    width: 75px;
+  }
+
+  .main-content {
+    margin-left: 75px;
+    padding: 25px;
+  }
+
+  .nav-item.active {
+    background: #345b40;
+  }
+
+  .detail-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .screen {
+    padding: 18px 12px;
+  }
+
+  .auth-container {
+    padding: 30px 23px;
+    border-radius: 11px;
+  }
+
+  .auth-container .brand-icon {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .auth-container {
+    text-align: center;
+  }
+
+  .auth-container form {
+    text-align: left;
+  }
+
+  .sidebar {
+    background: #1d3829;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 -4px 15px rgba(20, 43, 27, 0.1);
+  }
+
+  .nav-item {
+    color: #b6c3b9;
+  }
+
+  .nav-item.active {
+    background: #345b40;
+    color: #fff;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 22px 16px 95px;
+  }
+
+  .topbar {
+    border-bottom: 1px solid #e3e8e2;
+    padding-bottom: 18px;
+  }
+
+  .topbar h1 {
+    font-size: 23px;
+  }
+
+  .summary-card {
+    min-height: 90px;
+    padding: 12px 10px;
+    gap: 8px;
+  }
+
+  .summary-icon {
+    width: 35px;
+    height: 35px;
+    padding: 6px;
+  }
+
+  .summary-card strong {
+    font-size: 20px;
+  }
+
+  .plants-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-card-photo {
+    height: 205px;
+  }
+
+  .add-plant-card {
+    padding: 16px;
+  }
+
+  .add-plant-section {
+    padding: 20px 16px;
+  }
+
+  .add-plant-form {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .detail-header {
+    padding: 18px;
+  }
+
+  .sensor-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .sensor-card {
+    padding: 13px;
+  }
+
+  .sensor-card > strong {
+    font-size: 21px;
+  }
+
+  .chart-card {
+    padding: 17px 13px;
+  }
+
+  .chart-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chart-filter {
+    width: 100%;
+  }
+
+  .chart-container {
+    height: 220px;
+  }
+
+  .detail-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plant-modal {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .plant-modal-content {
+    max-height: 92vh;
+    padding: 22px 17px;
+    border-radius: 12px 12px 8px 8px;
+  }
+
+  .edit-photo-section {
+    align-items: flex-start;
+  }
+
+  .plant-edit-form .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .plant-edit-form .form-actions button {
+    width: 100%;
+  }
+
+  .toast {
+    bottom: 80px;
+    right: 15px;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-content {
+    padding-left: 11px;
+    padding-right: 11px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sensor-card {
+    padding: 11px;
+  }
+
+  .edit-photo-section {
+    flex-direction: column;
+  }
+}
+/* =========================================
+   MENU DE AÇÕES DOS CARDS
+========================================= */
+
+.plant-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.plant-card-actions .plant-details-button {
+    flex: 1;
+}
+
+.plant-actions-menu {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.plant-menu-trigger {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+    line-height: 1;
+    font-weight: 600;
+
+    background: #f5f7f5;
+    border: 1px solid #e5e9e5;
+    border-radius: 8px;
+
+    color: #526052;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.plant-menu-trigger:hover {
+    background: #eaf1eb;
+    color: #1b4329;
+}
+
+.plant-menu-trigger::-webkit-details-marker {
+    display: none;
+}
+
+
+.plant-menu-dropdown {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 8px);
+
+    width: 145px;
+    padding: 6px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    background: #fff;
+    border: 1px solid #e2e9e3;
+    border-radius: 10px;
+
+    box-shadow: 0 8px 24px rgba(25, 55, 35, 0.12);
+    z-index: 20;
+}
+
+.plant-menu-dropdown button {
+    width: 100%;
+    padding: 10px 12px;
+
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+
+    text-align: left;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.plant-menu-dropdown .plant-edit-button {
+    color: #315b40;
+}
+
+.plant-menu-dropdown .plant-delete-button {
+    color: #c34b4b;
+}
+
+.plant-menu-dropdown .plant-edit-button:hover {
+    background: #f0f5f1;
+}
+
+.plant-menu-dropdown .plant-delete-button:hover {
+    background: #fff1f1;
+}
+
